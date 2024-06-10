@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="http://gtri.gatech.edu"?>
+<runscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    name="Straight flying">
+
+  <run start="0.0" end="50" dt="0.001"
+       time_warp="10"
+       enable_gui="true"
+       network_gui="false"
+       start_paused="true"/>
+
+  <multi_threaded num_threads="8">false</multi_threaded>
+  <stream_port>50051</stream_port>
+  <stream_ip>localhost</stream_ip>
+
+  <end_condition>time, all_dead</end_condition> <!-- time, one_team, none-->
+
+  <grid_spacing>10</grid_spacing>
+  <grid_size>1000</grid_size>
+
+  <!-- <terrain>mcmillan</terrain> -->
+  <background_color>191 191 191</background_color> <!-- Red Green Blue -->
+  <gui_update_period>10</gui_update_period> <!-- milliseconds -->
+
+  <plot_tracks>false</plot_tracks>
+  <output_type>all</output_type>
+  <show_plugins>false</show_plugins>
+
+  <log_dir>~/.scrimmage/logs</log_dir>
+
+  <latitude_origin>35.721025</latitude_origin>
+  <longitude_origin>-120.767925</longitude_origin>
+  <altitude_origin>300</altitude_origin>
+  <show_origin>true</show_origin>
+  <origin_length>10</origin_length>
+
+  <entity_interaction collision_range="2">SimpleCollision</entity_interaction>
+  <!-- <entity_interaction capture_range="5">SimpleCapture</entity_interaction> -->
+
+  <metrics team_collisions_w="-5" non_team_collisions_w="1" flight_time_w="0">SimpleCollisionMetrics</metrics>
+  <!-- <metrics TeamCapture_weight="0" NonTeamCapture_weight="1">SimpleCaptureMetrics</metrics> -->
+  <!-- <entity_interaction>GroundCollision</entity_interaction>   -->
+  <enable_screenshots min_period="1.0" start="8.3" end="15.3">false</enable_screenshots>
+
+   <entity_interaction name="blue_boundary"
+                      id="1"
+                      team_id="1"
+                      type="cuboid"
+                      lengths="500, 1000, 500"
+                      center="250, 0, 250"
+                      color="0 0 255"
+                      >Boundary</entity_interaction>
+
+    
+    <entity_interaction name="red_boundary"
+                      id="3"
+                      team_id="2"
+                      type="cuboid"
+                      lengths="500, 1000, 500"
+                      center="-250, 0, 250"
+                      color="255 0 0"
+                      >Boundary</entity_interaction>
+
+    
+    <entity_interaction name="game_boundary"
+                      id="5"
+                      team_id="3"
+                      type="cuboid"
+                      lengths="1000, 1000, 500"
+                      center="0, 0, 250"
+                      color="0 255 0"
+                      show_boundary="true"
+                      >Boundary</entity_interaction>
+
+    <entity_interaction active_boundary_ids="5">EnforceBoundaryInteraction</entity_interaction>
+
+  <!-- uncomment "seed" and use integer for deterministic results -->
+  <seed>2147483648</seed>
+
+  <network>GlobalNetwork</network>
+  <network>LocalNetwork</network>
+
+  <!-- ========================== Moving Aircraft ========================= -->
+  <entity>
+    <team_id>1</team_id>
+    <color>255 0 0</color>
+    <count>3</count>
+    <health>1</health>
+    <radius>1</radius>  
+
+    <variance_x>2000</variance_x>
+    <variance_y>20000</variance_y>
+    <variance_z>1000</variance_z>
+
+
+    <x>250</x>
+    <y>0</y>
+    <z>250</z>
+    <heading>180</heading>
+    <controller>SimpleAircraftControllerPID</controller>
+    <motion_model>SimpleAircraft</motion_model>
+    <visual_model>zephyr-blue</visual_model>
+
+    <autonomy>realisticmotion</autonomy>
+    <!-- <autonomy show_shapes="false" max_speed="25" behaviors="
+       [ AvoidEntityMS gain='1.0' sphere_of_influence='10' minimum_range='2' ]
+       [ MoveToGoalMS gain='1.0' use_initial_heading='true' goal='-1300,0,100']"
+              >MotorSchemas</autonomy> -->
+
+  </entity>
+  
+  <!-- Entity that is generated during runtime by other plugins -->
+  <!-- =====================missile====================== -->
+  <entity tag="gen_straight">
+    <team_id>1</team_id>
+    <color>50 77 255</color>
+    <count>0</count>
+    <health>1</health>
+    <radius>1</radius>  
+    
+
+    <heading>180</heading>
+    
+    <autonomy>trajectorymissile</autonomy>
+    <controller>SimpleAircraftControllerPID</controller>
+    <motion_model>SimpleAircraft</motion_model>
+    <visual_model>missile</visual_model>
+    
+  </entity>
+
+    <!-- ===================== Ground Control Station ====================== -->
+  <entity>
+    <team_id>2</team_id>
+    <color>77 77 255</color>
+    <count>3</count>
+    <health>1</health>
+    <radius>1</radius>  
+
+    <x>-250</x>
+    <y>-300</y>
+    <z>15</z>
+
+    <variance_x>10990</variance_x>
+    <variance_y>150000</variance_y>
+    <variance_z>0</variance_z>
+
+    <heading>80</heading>
+    
+    <visual_model>sea-angler</visual_model>
+    <autonomy>Straight</autonomy>
+    <controller>SimpleAircraftControllerPID</controller>
+    <motion_model>SimpleAircraft</motion_model>
+
+  </entity>
+  
+</runscript>
